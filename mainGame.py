@@ -1,6 +1,6 @@
 import pygame
 
-from  sys import exit
+from sys import exit
 from win32api import GetSystemMetrics
 
 
@@ -14,40 +14,15 @@ pygame.init()
 
 
 # Makes the screen that the game is played on
-screen = pygame.display.set_mode((detail[0]/2,detail[1]/2))
+screen = pygame.display.set_mode((detail[0],detail[1]))
 gameIcon = pygame.image.load("images/icon.png")
 text_font = pygame.font.Font("Font/Pixeltype.ttf")
 
 clock = pygame.time.Clock()
 
-
-
-class assets():
-
-    # Constructor. Pass in the color of the block,
-    # and its x and y position
-    def __init__(self, width, height, image):
-       # Call the parent class (Sprite) constructor
-       pygame.sprite.Sprite.__init__(self)
-
-       # Create an image of the block, and fill it with a color.
-       # This could also be an image loaded from the disk.
-       self.image = pygame.Surface([width, height])
-       print(image)
-       self.image = pygame.image.load(image)
-
-       # Fetch the rectangle object that has the dimensions of the image
-       # Update the position of this object by setting the values of rect.x and rect.y
-       self.rect = self.image.get_rect()
-
-background_image = 'C:\\Users\\mlgpi\\Documents\\Code\\GameFor\\Images\\ocean.png'
-
-background = pygame.sprite.GroupSingle()
-background.add = assets(detail[0],detail[1],background_image)
-
-
-
-screen.blit(background_image,(detail[0],detail[1]))
+background_surface = pygame.image.load('Images\ocean.png')
+background_rect = background_surface.get_rect(topleft = (1,1))
+screen.blit(background_surface,background_rect)
 
 # Sets the title for the game when screen pops up
 pygame.display.set_caption('Bob')
