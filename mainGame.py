@@ -36,18 +36,44 @@ class Player(pygame.sprite.Sprite):
         # self.rect = self.image.get_rect()
 
 class Wall(pygame.sprite.Sprite):
-    def __init__(self):
-        rect = self.rect
+    def __init__(self,x,y):
         super().__init__()
-        self.image = pygame.draw.rect(screen,"gray",rect)
-        # self.rect = self.image.get_rect()
+        self.x = x
+        self.up = y
+        width = 50
+        height = 50
+
+        # Rect = X, Y, width, height
+        self.image = pygame.draw.rect(screen,"gray",(x,y,width,height))
+        # self.rect = self.image.get_rect(bottomleft = (left,up))
 
 
 player = pygame.sprite.GroupSingle()
 player.add(Player())
 
 wall = pygame.sprite.GroupSingle()
-wall.add(Wall())
+wall.add(Wall(1,1))
+wall.add(Wall(51,1))
+wall.add(Wall(101,1))
+wall.add(Wall(151,1))
+wall.add(Wall(201,1))
+wall.add(Wall(251,1))
+wall.add(Wall(301,1))
+wall.add(Wall(351,1))
+wall.add(Wall(401,1))
+wall.add(Wall(451,1))
+wall.add(Wall(501,1))
+wall.add(Wall(551,1))
+wall.add(Wall(601,1))
+wall.add(Wall(651,1))
+wall.add(Wall(701,1))
+wall.add(Wall(751,1))
+wall.add(Wall(4g01,221))
+
+
+
+
+
 
 # Statement for running game
 while True:
