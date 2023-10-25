@@ -51,7 +51,7 @@ colSixteen = colFifteen + 50
 # Makes the screen that the game is played on
 screen = pygame.display.set_mode((800,800))
 gameIcon = pygame.image.load("images/icon.png")
-text_font = pygame.font.Font("Font/Pixeltype.ttf")
+# text_font = pygame.font.Font("Font/Pixeltype.ttf")
 
 clock = pygame.time.Clock()
 
@@ -147,11 +147,8 @@ player.add(Player())
 wall = pygame.sprite.Group()
 goal = pygame.sprite.GroupSingle()
 
-# Statement for running game
-while True:
-    
     # Maze
-    map = [
+map = [
 
 # Row One
 [
@@ -532,6 +529,10 @@ while True:
     ]
 
 ]
+
+# Statement for running game
+while True:
+    
 
     # Checks player input
     for event in pygame.event.get():
