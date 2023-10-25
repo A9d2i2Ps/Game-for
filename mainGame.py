@@ -56,8 +56,9 @@ text_font = pygame.font.Font("Font/Pixeltype.ttf")
 clock = pygame.time.Clock()
 
 # Add backgound image
-background_surface = pygame.image.load('images/background.jpg')
 background_surface = pygame.draw.rect(screen,"white",(0,0,800,800))
+
+# background_surface = pygame.image.load('images/background.jpg')
 # background_rect = background_surface.get_rect(topleft = (0,0))
 # screen.blit(background_surface,(0,0))
 
@@ -75,25 +76,33 @@ pygame.display.set_icon(gameIcon)
 # Class for the controlable character
 
 class Player(pygame.sprite.Sprite):
-    
-    def __init__(self,x,y):
+    # Sets the default locations
+    def __init__(self):
         super().__init__()
-        self.x = x
-        self.y = y
-        self.image = pygame.draw.circle(screen,"purple",(x + 25, y + 25),20)
+        # self.x = x
+        # self.y = y
+        self.image = pygame.image.load('Images\purpleBall.png')
+        self.rect = self.image.get_rect(topleft=(colTwo+15,rowOne+20))
 
-
-    def player_input(self):
+# Grabs the player input and does an action based on input
+    def playerInput(self):
+        # Gets all the currently pressed key
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP] or keys[pygame.K_w]: # and self.rect.bottom >= 300:
-            self.x -= 20
+        
+        # Checks if individual key is pressed
+        if keys[pygame.K_UP] or keys[pygame.K_w]:
+            self.rect.y -= 10
+        if keys[pygame.K_DOWN] or keys[pygame.K_s]:
+            self.rect.y += 10
+        if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
+            self.rect.x += 10
+        if keys[pygame.K_LEFT] or keys[pygame.K_a]:
+            self.rect.x -= 10
 
+    # Calls inside functions
     def update(self):
-	    self.player_input()
-            
-		
-
-
+        self.playerInput()
+        # pygame.sprite.Group.remove_internal
 
 # pygame
 # Constant      ASCII   Description
@@ -116,42 +125,32 @@ class Wall(pygame.sprite.Sprite):
         super().__init__()
         self.x = x
         self.y = y
-        width = 50
-        height = 50
 
         # Rect = X, Y, width, height
-        self.image = pygame.draw.rect(screen,"black",(x,y,width,height))
-        
-
-
+        self.image = pygame.image.load('Images\wall.png')
+        self.rect = self.image.get_rect(topleft=(x,y))
 
 # Destination where player needs to reach
-
 class Goal(pygame.sprite.Sprite):
     def __init__(self,x,y):
         super().__init__()
         self.x = x
-        self.up = y
-        width = 50
-        height = 50
+        self.y = y
 
         # Rect = X, Y, width, height
-        self.image = pygame.draw.rect(screen,"green",(x,y,width,height))
+        self.image = pygame.image.load('Images\goal.png')
+        self.rect = self.image.get_rect(topleft=(x,y))
 
+# Sets all the groups for each object
 player = pygame.sprite.GroupSingle()
-player.add(Player(colTwo,rowOne))
+player.add(Player())
 wall = pygame.sprite.Group()
 goal = pygame.sprite.GroupSingle()
-# Area of the whole map
-
-
-
 
 # Statement for running game
 while True:
     
-    test = 1
-
+    # Maze
     map = [
 
 # Row One
@@ -534,8 +533,6 @@ while True:
 
 ]
 
-    keys = pygame.key.get_pressed()
-
     # Checks player input
     for event in pygame.event.get():
         # Checks if the player input is the exit botton and closes code if clicked
@@ -543,30 +540,14 @@ while True:
             pygame.quit()
             exit()
 
-        # if keys[pygame.K_UP] or keys[pygame.K_w] :
-        
-        #     print('w' + str(test))
-        #     test = test + 1
-        #     player_y += 100
-        #     print(player_y)
-        # if event.type == pygame.K_UP or pygame.K_w:
-        #     print('w' + str(test))
-        #     test = test + 1
-        #     player_y += 100
-        #     print(player_y)
+    pygame.draw.rect(screen,"white",(0,0,800,800))
+    wall.draw(screen)
+    goal.draw(screen)
+    player.draw(screen)
+    player.update()
     
+    # 
 
-    
-        
-        
-
-    # if keys[pygame.K_DOWN] or keys[pygame.K_a]:
-        
-    # if keys[pygame.K_LEFT] or keys[pygame.K_s]:
-
-    # if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-
-    # player.add(Player(player_x,player_y))
-    # player.update(player_x,player_y)
-    pygame.display.update()
+    # Updates the screen and sets FPS limit to 60
     clock.tick(60)
+    pygame.display.update()
