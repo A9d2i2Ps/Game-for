@@ -5,7 +5,7 @@ from win32api import GetSystemMetrics
 
 
 # Width of screen first height of screen second
-detail = [GetSystemMetrics(0),GetSystemMetrics(1)]
+# detail = [GetSystemMetrics(0),GetSystemMetrics(1)]
 # detail = [1600,800]
 
 # At start of game so can function properly
@@ -61,7 +61,8 @@ background_surface = pygame.draw.rect(screen,"white",(0,0,800,800))
 # background_rect = background_surface.get_rect(topleft = (0,0))
 # screen.blit(background_surface,(0,0))
 
-
+player_x = 0
+player_y = 0
 
 
 
@@ -75,16 +76,24 @@ pygame.display.set_icon(gameIcon)
 
 class Player(pygame.sprite.Sprite):
     
-    
     def __init__(self,x,y):
         super().__init__()
         self.x = x
         self.y = y
-        self.image = pygame.draw.circle(screen,"purple",(x + 75, y + 25),20)
-        # self.rect = self.image.get_rect()
+        self.image = pygame.draw.circle(screen,"purple",(x + 25, y + 25),20)
 
 
-   
+    def player_input(self):
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP] or keys[pygame.K_w]: # and self.rect.bottom >= 300:
+            self.x -= 20
+
+    def update(self):
+	    self.player_input()
+        print()
+		
+
+
 
 # pygame
 # Constant      ASCII   Description
@@ -112,6 +121,7 @@ class Wall(pygame.sprite.Sprite):
 
         # Rect = X, Y, width, height
         self.image = pygame.draw.rect(screen,"black",(x,y,width,height))
+        
 
 
 
@@ -129,7 +139,7 @@ class Goal(pygame.sprite.Sprite):
         self.image = pygame.draw.rect(screen,"green",(x,y,width,height))
 
 player = pygame.sprite.GroupSingle()
-player.add(Player(colTwo,rowTwo))
+player.add(Player(colTwo,rowOne))
 wall = pygame.sprite.Group()
 goal = pygame.sprite.GroupSingle()
 # Area of the whole map
@@ -139,8 +149,8 @@ goal = pygame.sprite.GroupSingle()
 
 # Statement for running game
 while True:
-    player_x = 0
-    player_y = 0
+    
+    test = 1
 
     map = [
 
@@ -532,10 +542,21 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+
+        # if keys[pygame.K_UP] or keys[pygame.K_w] :
+        
+        #     print('w' + str(test))
+        #     test = test + 1
+        #     player_y += 100
+        #     print(player_y)
+        # if event.type == pygame.K_UP or pygame.K_w:
+        #     print('w' + str(test))
+        #     test = test + 1
+        #     player_y += 100
+        #     print(player_y)
     
 
-    if keys[pygame.K_UP] or keys[pygame.K_w] :
-        player_y += 100
+    
         
         
 
@@ -546,6 +567,6 @@ while True:
     # if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
 
     # player.add(Player(player_x,player_y))
-    player.update(player_x,player_y)
+    # player.update(player_x,player_y)
     pygame.display.update()
     clock.tick(60)
