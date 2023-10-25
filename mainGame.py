@@ -74,11 +74,14 @@ pygame.display.set_icon(gameIcon)
 # Class for the controlable character
 
 class Player(pygame.sprite.Sprite):
+    
+    
     def __init__(self,x,y):
         super().__init__()
         self.x = x
         self.y = y
         self.image = pygame.draw.circle(screen,"purple",(x + 75, y + 25),20)
+        # self.rect = self.image.get_rect()
 
 
    
@@ -126,13 +129,20 @@ class Goal(pygame.sprite.Sprite):
         self.image = pygame.draw.rect(screen,"green",(x,y,width,height))
 
 player = pygame.sprite.GroupSingle()
-player.add(Player())
-
+player.add(Player(colTwo,rowTwo))
 wall = pygame.sprite.Group()
 goal = pygame.sprite.GroupSingle()
 # Area of the whole map
 
-map = [
+
+
+
+# Statement for running game
+while True:
+    player_x = 0
+    player_y = 0
+
+    map = [
 
 # Row One
 [
@@ -514,9 +524,6 @@ map = [
 
 ]
 
-
-# Statement for running game
-while True:
     keys = pygame.key.get_pressed()
 
     # Checks player input
@@ -526,9 +533,9 @@ while True:
             pygame.quit()
             exit()
     
-    if keys[pygame.K_UP] or keys[pygame.K_w] :
-        player.add(Player(1,1))
 
+    if keys[pygame.K_UP] or keys[pygame.K_w] :
+        player_y += 100
         
         
 
@@ -538,6 +545,7 @@ while True:
 
     # if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
 
-
+    # player.add(Player(player_x,player_y))
+    player.update(player_x,player_y)
     pygame.display.update()
     clock.tick(60)
