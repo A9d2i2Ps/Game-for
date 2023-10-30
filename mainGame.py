@@ -1,17 +1,12 @@
+# Imports modules 
 import pygame 
-
 from sys import exit
-from win32api import GetSystemMetrics
-
-
-# Width of screen first height of screen second
-# detail = [GetSystemMetrics(0),GetSystemMetrics(1)]
-# detail = [1600,800]
+import random
 
 # At start of game so can function properly
 pygame.init()
 
-
+# Store all the cords for the row
 rowOne = 0
 rowTwo = rowOne + 50
 rowThree = rowTwo + 50
@@ -51,19 +46,10 @@ colSixteen = colFifteen + 50
 # Makes the screen that the game is played on
 screen = pygame.display.set_mode((800,800))
 gameIcon = pygame.image.load("images/icon.png")
-# text_font = pygame.font.Font("Font/Pixeltype.ttf")
-
+gameStatus = 0
+gameAlive = True
 clock = pygame.time.Clock()
-
-# Add backgound image
-background_surface = pygame.draw.rect(screen,"white",(0,0,800,800))
-
-# background_surface = pygame.image.load('images/background.jpg')
-# background_rect = background_surface.get_rect(topleft = (0,0))
-# screen.blit(background_surface,(0,0))
-
-player_x = 0
-player_y = 0
+font = pygame.font.Font('font/Pixeltype.ttf', 50)
 
 
 
@@ -74,53 +60,50 @@ pygame.display.set_caption('Bob')
 pygame.display.set_icon(gameIcon)
 
 # Class for the controlable character
-
 class Player(pygame.sprite.Sprite):
     # Sets the default locations
     def __init__(self):
         super().__init__()
-        # self.x = x
-        # self.y = y
         self.image = pygame.image.load('Images\purpleBall.png')
-        self.rect = self.image.get_rect(topleft=(colTwo+15,rowOne+20))
+        self.rect = self.image.get_rect(topleft=(colTwo+15,rowOne+20)) 
 
 # Grabs the player input and does an action based on input
     def playerInput(self):
         # Gets all the currently pressed key
         keys = pygame.key.get_pressed()
+        # Player speed
+        speed = 2
         
         # Checks if individual key is pressed
         if keys[pygame.K_UP] or keys[pygame.K_w]:
-            self.rect.y -= 10
+            self.rect.y -= speed
         if keys[pygame.K_DOWN] or keys[pygame.K_s]:
-            self.rect.y += 10
+            self.rect.y += speed
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
-            self.rect.x += 10
+            self.rect.x += speed
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
-            self.rect.x -= 10
+            self.rect.x -= speed
+    # pygame
+    # Constant      ASCII   Description
+    # ---------------------------------
 
-    # Calls inside functions
+    # K_UP                  up arrow
+    # K_DOWN                down arrow
+    # K_RIGHT               right arrow
+    # K_LEFT                left arrow
+    # K_w           w       w
+    # K_a           a       a
+    # K_s           s       s
+    # K_d           d       d
+
+    # Calls functions inside class that need to be used
     def update(self):
         self.playerInput()
-        # pygame.sprite.Group.remove_internal
-
-# pygame
-# Constant      ASCII   Description
-# ---------------------------------
-
-# K_UP                  up arrow
-# K_DOWN                down arrow
-# K_RIGHT               right arrow
-# K_LEFT                left arrow
-# K_w           w       w
-# K_a           a       a
-# K_s           s       s
-# K_d           d       d
-
 
 # Wall class for the "enemy wall"
-
 class Wall(pygame.sprite.Sprite):
+    
+    # when class if called all default information on it
     def __init__(self,x,y):
         super().__init__()
         self.x = x
@@ -132,12 +115,15 @@ class Wall(pygame.sprite.Sprite):
 
 # Destination where player needs to reach
 class Goal(pygame.sprite.Sprite):
+
+    # when class if called all default information on it
     def __init__(self,x,y):
         super().__init__()
         self.x = x
         self.y = y
 
         # Rect = X, Y, width, height
+        # Creates image and attaches rect in relation to image
         self.image = pygame.image.load('Images\goal.png')
         self.rect = self.image.get_rect(topleft=(x,y))
 
@@ -147,7 +133,7 @@ player.add(Player())
 wall = pygame.sprite.Group()
 goal = pygame.sprite.GroupSingle()
 
-    # Maze
+# Maze
 map = [
 
 # Row One
@@ -530,25 +516,108 @@ map = [
 
 ]
 
+def playerCollide():
+        # 0 = game running  
+        # 1 = player crashed into wall
+        # 2 = player won
+
+        # Default game status
+        gameStatus = 0
+        
+        # Checks for player collision in relation to the wall
+        wallCollide = pygame.sprite.spritecollide(player.sprite,wall,False)
+        # Checks if ccollision is being reported
+        if(len(wallCollide) != 0):
+            gameStatus = 1
+            return gameStatus
+        
+        # Checks for player collision in relation to the goal
+        goalCollide = pygame.sprite.spritecollide(player.sprite,goal,False)
+        # Checks if ccollision is being reported
+        if(len(goalCollide) != 0):
+            gameStatus = 2
+            return gameStatus
+        
+        return gameStatus
+    
+
+
 # Statement for running game
-while True:
-    
+while (gameAlive):
+    while (gameStatus == 0):
+        
+        # Checks for collision
+        gameStatus = playerCollide()
 
-    # Checks player input
-    for event in pygame.event.get():
-        # Checks if the player input is the exit botton and closes code if clicked
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit()
+        # Checks player input
+        for event in pygame.event.get():
+            # Checks if the player input is the exit botton and closes code if clicked
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        # Creates the background that the maze runs over
+        pygame.draw.rect(screen,"white",(0,0,800,800))
 
-    pygame.draw.rect(screen,"white",(0,0,800,800))
-    wall.draw(screen)
-    goal.draw(screen)
-    player.draw(screen)
-    player.update()
-    
-    # 
+        # Renders in all the sprites
+        wall.draw(screen)
+        goal.draw(screen)
+        player.draw(screen)
 
-    # Updates the screen and sets FPS limit to 60
-    clock.tick(60)
-    pygame.display.update()
+        # Calls the update function in the player class
+        player.update()
+        
+        
+
+        # Updates the screen and sets FPS limit to 60
+        clock.tick(60)
+        pygame.display.update()
+    else:
+        # Sets background to you lost screen
+        lostBackground = pygame.image.load('Images\youDie.jpg')
+        lostBackgroundRect = lostBackground.get_rect(topleft=(0,0))
+        screen.blit(lostBackground,lostBackgroundRect)
+
+        while (gameStatus == 1):
+
+            # Checks player input
+            for event in pygame.event.get():
+            # Checks if the player input is the exit botton and closes code if clicked
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_SPACE]:
+                print('space')
+                gameStatus = 0
+
+            print(gameStatus)
+            pygame.display.update()
+
+        else:
+            # Sets background for if you won
+            wonBackground = pygame.image.load('Images\youWon.jpg')
+            wonBackgroundRect = wonBackground.get_rect(topleft=(0,0))
+            screen.blit(wonBackground,wonBackgroundRect)
+
+            # Checks if player won
+            while(gameStatus == 2):
+                print('Player won')
+                # Checks player input
+                for event in pygame.event.get():
+                # Checks if the player input is the exit botton and closes code if clicked
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        exit()
+                    # Restarts game
+                    if event.type == pygame.K_SPACE:
+                        gameStatus = 0
+                    # pygame.K_SPACE
+                
+                wonMessage = font.render('Bob',False,(255,255,255),(0,0,0))
+                wonMessageRect = wonMessage.get_rect(center = (400,400))
+                print(wonMessageRect)
+                
+
+                screen.blit(wonMessage,wonMessageRect)
+
+                pygame.display.update()
