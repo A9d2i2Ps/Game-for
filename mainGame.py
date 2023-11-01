@@ -617,7 +617,7 @@ while (gameAlive):
             
             # Creates the message showed at end when you won
             wonMessage = font.render('Horray',False,(255,255,255))
-            wonMessageRect = wonMessage.get_rect(center = (400,400))              
+            wonMessageRect = wonMessage.get_rect(midbottom = (400,600))              
             
             # Displays the message
             screen.blit(wonMessage,wonMessageRect)
