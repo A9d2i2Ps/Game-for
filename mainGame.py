@@ -87,9 +87,9 @@ class Player(pygame.sprite.Sprite):
     # ---------------------------------
 
     # K_UP                  up arrow
+    # K_LEFT                left arrow
     # K_DOWN                down arrow
     # K_RIGHT               right arrow
-    # K_LEFT                left arrow
     # K_w           w       w
     # K_a           a       a
     # K_s           s       s
