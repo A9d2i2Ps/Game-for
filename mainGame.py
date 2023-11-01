@@ -1,7 +1,6 @@
 # Imports modules 
 import pygame 
 from sys import exit
-import random
 
 # At start of game so can function properly
 pygame.init()
@@ -95,10 +94,13 @@ class Player(pygame.sprite.Sprite):
     # K_a           a       a
     # K_s           s       s
     # K_d           d       d
-
+        
     # Calls functions inside class that need to be used
     def update(self):
         self.playerInput()
+        # Kills sprite when 
+        if gameStatus != 0:
+            self.kill()
 
 # Wall class for the "enemy wall"
 class Wall(pygame.sprite.Sprite):
@@ -129,9 +131,8 @@ class Goal(pygame.sprite.Sprite):
 
 # Sets all the groups for each object
 player = pygame.sprite.GroupSingle()
-player.add(Player())
 wall = pygame.sprite.Group()
-goal = pygame.sprite.GroupSingle()
+goal = pygame.sprite.Group()
 
 # Maze
 map = [
@@ -516,38 +517,44 @@ map = [
 
 ]
 
-def playerCollide():
+# Checks if player is hitting something
+def playerCollide(gameStatus):
         # 0 = game running  
         # 1 = player crashed into wall
         # 2 = player won
-
-        # Default game status
-        gameStatus = 0
-        
-        # Checks for player collision in relation to the wall
-        wallCollide = pygame.sprite.spritecollide(player.sprite,wall,False)
-        # Checks if ccollision is being reported
-        if(len(wallCollide) != 0):
-            gameStatus = 1
+        while (gameStatus == 0):
+            # Default game status
+            gameStatus = 0
+            
+            # Checks for player collision in relation to the wall
+            wallCollide = pygame.sprite.spritecollide(player.sprite,wall,False)
+            # Checks if ccollision is being reported
+            if(len(wallCollide) != 0):
+                gameStatus = 1
+                return gameStatus
+            
+            # Checks for player collision in relation to the goal
+            goalCollide = pygame.sprite.spritecollide(player.sprite,goal,False)
+            # Checks if ccollision is being reported
+            if(len(goalCollide) != 0):
+                gameStatus = 2
+                return gameStatus
+            
+            return gameStatus
+        else:
             return gameStatus
         
-        # Checks for player collision in relation to the goal
-        goalCollide = pygame.sprite.spritecollide(player.sprite,goal,False)
-        # Checks if ccollision is being reported
-        if(len(goalCollide) != 0):
-            gameStatus = 2
-            return gameStatus
-        
-        return gameStatus
-    
 
 
 # Statement for running game
 while (gameAlive):
+    # Creates the player
+    player.add(Player())
+
+    # When playing game
     while (gameStatus == 0):
-        
         # Checks for collision
-        gameStatus = playerCollide()
+        gameStatus = playerCollide(gameStatus)
 
         # Checks player input
         for event in pygame.event.get():
@@ -572,13 +579,11 @@ while (gameAlive):
         clock.tick(60)
         pygame.display.update()
     else:
-        # Sets background to you lost screen
-        lostBackground = pygame.image.load('Images\youDie.jpg')
-        lostBackgroundRect = lostBackground.get_rect(topleft=(0,0))
-        screen.blit(lostBackground,lostBackgroundRect)
-
         while (gameStatus == 1):
-
+            # Sets background to you lost screen
+            lostBackground = pygame.image.load('Images\youDie.jpg')
+            lostBackgroundRect = lostBackground.get_rect(topleft=(0,0))
+            screen.blit(lostBackground,lostBackgroundRect)
             # Checks player input
             for event in pygame.event.get():
             # Checks if the player input is the exit botton and closes code if clicked
@@ -586,38 +591,36 @@ while (gameAlive):
                     pygame.quit()
                     exit()
             keys = pygame.key.get_pressed()
+            # Sets background to you lost screen
             if keys[pygame.K_SPACE]:
-                print('space')
                 gameStatus = 0
 
-            print(gameStatus)
-            pygame.display.update()
+            # Updates screen
+            pygame.display.update()         
 
-        else:
+        # Checks if player won
+        while (gameStatus == 2):
             # Sets background for if you won
             wonBackground = pygame.image.load('Images\youWon.jpg')
             wonBackgroundRect = wonBackground.get_rect(topleft=(0,0))
             screen.blit(wonBackground,wonBackgroundRect)
+            # Checks player input
+            for event in pygame.event.get():
+               # Checks if the player input is the exit botton and closes code if clicked
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+            keys = pygame.key.get_pressed()
+            # Checks if user wants to restart game
+            if keys[pygame.K_SPACE]:
+                gameStatus = 0
+            
+            # Creates the message showed at end when you won
+            wonMessage = font.render('Horray',False,(255,255,255))
+            wonMessageRect = wonMessage.get_rect(center = (400,400))              
+            
+            # Displays the message
+            screen.blit(wonMessage,wonMessageRect)
 
-            # Checks if player won
-            while(gameStatus == 2):
-                print('Player won')
-                # Checks player input
-                for event in pygame.event.get():
-                # Checks if the player input is the exit botton and closes code if clicked
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        exit()
-                    # Restarts game
-                    if event.type == pygame.K_SPACE:
-                        gameStatus = 0
-                    # pygame.K_SPACE
-                
-                wonMessage = font.render('Bob',False,(255,255,255),(0,0,0))
-                wonMessageRect = wonMessage.get_rect(center = (400,400))
-                print(wonMessageRect)
-                
-
-                screen.blit(wonMessage,wonMessageRect)
-
-                pygame.display.update()
+            # Updates display
+            pygame.display.update()
