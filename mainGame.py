@@ -1,3 +1,4 @@
+
 # Imports modules 
 import pygame 
 from sys import exit
@@ -136,7 +137,9 @@ goal = pygame.sprite.Group()
 
 # Maze
 map = [
+# So player cant walk off
 
+[wall.add(Wall(colTwo,rowOne-50))],
 # Row One
 [
     [ # Col 1-4
@@ -595,6 +598,8 @@ while (gameAlive):
             if keys[pygame.K_SPACE]:
                 gameStatus = 0
 
+            wonMessage = font.render('Not Horray \nHit space to restart',False,(1,1,1))
+            wonMessageRect = wonMessage.get_rect(midbottom = (400,600))
             # Updates screen
             pygame.display.update()         
 
@@ -616,7 +621,7 @@ while (gameAlive):
                 gameStatus = 0
             
             # Creates the message showed at end when you won
-            wonMessage = font.render('Horray',False,(255,255,255))
+            wonMessage = font.render('Horray \nHit space to restart',False,(255,255,255))
             wonMessageRect = wonMessage.get_rect(midbottom = (400,600))              
             
             # Displays the message
