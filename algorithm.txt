@@ -1,0 +1,9 @@
+1. User starts the game
+2. User hits movement key
+3. Game checks what the movement key and moves accordingly
+4. Check to see if user hits anything after moving
+5. Check if the object is the wall
+6. End game is user hit wall
+7. Check if user hit goal
+8. If user hit goal then put you won screen
+9. If they didnt hit anything then continue to accept input and repeat 2-8 until an object is hit
